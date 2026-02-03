@@ -1,0 +1,86 @@
+"id","filename","content","content_type","owner_id","uploaded_at","extracted_text"
+1,"S&F.pdf","binary data","application/pdf",3,"2025-09-02 06:03:58.082731","DEPARTMENT OF ARTIFICIAL INTELLIGENCE AND DATA
+SCIENCE ACADEMIC YEAR : 2025-2026(ODD SEM)
+COURSE CODE & NAME : ADI1302 & SPARK AND SCALA
+FUNDAMENTALS
+SELF STUDY ASSESMENT -1
+Name : SELVA SURYA E
+Reg NO : 927623BAD102
+Topic : Generate monthly reports cards using Dataframe Aggregation
+Date : 04/08/2025
+PROGRAM :
+object StudentReportCards extends App {
+case class Record(id: Int, name: String, subject: String, marks: Int, date: String)
+val data = Vector(
+Record(1, ""Selva Surya E"", ""Math"", 85, ""2025-01-12""),
+Record(1, ""Selva Surya E"", ""Science"", 90, ""2025-01-20""),
+Record(1, ""Selva Surya E"", ""English"", 75, ""2025-02-10""),
+Record(1, ""Selva Surya E"", ""Math"", 95, ""2025-02-18""),
+Record(2, ""Arun"", ""Math"", 60, ""2025-01-15""),
+Record(2, ""Arun"", ""Science"", 70, ""2025-02-25""),
+Record(2, ""Arun"", ""English"", 65, ""2025-02-28""),
+Record(3, ""Priya"", ""Math"", 88, ""2025-01-16""),
+Record(3, ""Priya"", ""Science"", 92, ""2025-01-25""),
+Record(3, ""Priya"", ""English"", 81, ""2025-02-14""),
+Record(3, ""Priya"", ""Math"", 79, ""2025-02-22""),
+Record(4, ""Kiran"", ""Math"", 55, ""2025-01-18""),
+Record(4, ""Kiran"", ""Science"", 62, ""2025-02-12""),
+Record(4, ""Kiran"", ""English"", 70, ""2025-02-19""),
+Record(5, ""Divya"", ""Math"", 95, ""2025-01-14""),Record(5, ""Divya"", ""Science"", 89, ""2025-01-23""),
+Record(5, ""Divya"", ""English"", 78, ""2025-02-09""),
+Record(5, ""Divya"", ""Math"", 85, ""2025-02-27""),
+Record(6, ""Rahul"", ""Math"", 67, ""2025-01-20""),
+Record(6, ""Rahul"", ""Science"", 74, ""2025-01-29""),
+Record(6, ""Rahul"", ""English"", 81, ""2025-02-15""),
+Record(7, ""Meena"", ""Math"", 90, ""2025-01-21""),
+Record(7, ""Meena"", ""Science"", 88, ""2025-02-11""),
+Record(7, ""Meena"", ""English"", 84, ""2025-02-26""),
+Record(8, ""Vijay"", ""Math"", 72, ""2025-01-13""),
+Record(8, ""Vijay"", ""Science"", 80, ""2025-01-24""),
+Record(8, ""Vijay"", ""English"", 69, ""2025-02-05""),
+Record(9, ""Anitha"", ""Math"", 91, ""2025-01-19""),
+Record(9, ""Anitha"", ""Science"", 87, ""2025-02-07""),
+Record(9, ""Anitha"", ""English"", 93, ""2025-02-21"")
+)
+def year(date: String): Int = date.substring(0, 4).toInt
+def month(date: String): Int = date.substring(5, 7).toInt
+def avg(xs: Iterable[Int]): Double = if (xs.isEmpty) 0.0 else xs.sum.toDouble / xs.size
+val byStudent = data.groupBy(r => (r.id, r.name)).view.mapValues(_.sortBy(_.date)).toMap
+byStudent.toVector.sortBy(_._1._1).foreach { case ((sid, sname), records) =>
+println(s""\nReport Card for $sname (ID: $sid)"")
+println(""--------------------------------------------------"")
+val byYmSubj = records.groupBy(r => (year(r.date), month(r.date), r.subject))
+byYmSubj.toVector.sortBy { case ((yy, mm, subj), _) => (yy, mm, subj) }
+.foreach { case ((yy, mm, subj), rs) =>
+val marks = rs.map(_.marks)
+val avgMarks = avg(marks)
+val totalMarks = marks.sumprintln(s""In $yy-$mm, subject $subj: average score = $avgMarks%.2f, total = $totalMarks""
+.format(avgMarks))
+}
+val monthlyTotals = records.groupBy(r => (year(r.date), month(r.date))).toVector
+.sortBy(_._1).map { case ((yy, mm), rs) => (yy, mm, rs.map(_.marks).sum) }
+println(""\nMonthly Summary:"")
+monthlyTotals.foreach { case (yy, mm, total) =>
+println(s""In $yy-$mm, total marks across subjects = $total"")
+}
+}
+println(s""\nGenerated ${data.size} records for ${byStudent.size} students."")
+}
+OUTPUT :"
+2,"S&F2.pdf","binary data","application/pdf",3,"2025-09-02 06:23:45.556182","PROGRAM FOR DISPLAYING NAME:
+PROGRAM FOR SUM OF TWO NUMBERS:CONDITIONAL PROGRAM (IF/ELSE)
+CONTROL STATEMENT / LOOPINGS :
+1. FOR LOOP :2. WHILE LOOP :
+3. DO-WHILE LOOP :"
+3,"vj.pdf","binary data","application/pdf",3,"2025-09-02 06:28:51.154545","This is to certify that
+Vijay
+successfully completed and received a passing grade in
+Predictive Modeling Fundamentals I
+(PA0101EN, provided by IBM Skills Network)
+A course on cognitiveclass.ai
+Powered by IBM Developer Skills Network.
+Issued by
+Cognitive Class
+August 12, 2025
+Authenticity of this certificate can be validated by going to:
+https://courses.cognitiveclass.ai/certificates/eeec59f6362e494586b0018826f15585"
