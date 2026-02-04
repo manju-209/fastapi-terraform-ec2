@@ -1,4 +1,4 @@
-- name: Configure EC2 and deploy FastAPI (post Terraform)
+- name: Deploy FastAPI app to EC2
   hosts: fastapi
   become: true
 
@@ -8,52 +8,41 @@
     app_port: 8000
 
   tasks:
-    - name: Update OS packages
+    - name: Update OS
       yum:
         name: "*"
         state: latest
 
-    - name: Install Python and pip
+    - name: Install Python & pip
       yum:
         name:
           - python3
           - python3-pip
         state: present
 
-    - name: Install FastAPI and Uvicorn
-      pip:
-        name:
-          - fastapi
-          - uvicorn
-        executable: pip3
-
-    - name: Create application directory
+    - name: Create app directory
       file:
         path: "{{ app_dir }}"
         state: directory
         owner: "{{ app_user }}"
         group: "{{ app_user }}"
-        mode: "0755"
 
-    - name: Deploy FastAPI application
-      copy:
-        dest: "{{ app_dir }}/main.py"
-        owner: "{{ app_user }}"
-        group: "{{ app_user }}"
-        mode: "0644"
-        content: |
-          from fastapi import FastAPI
+    - name: Copy FastAPI project to EC2
+      synchronize:
+        src: ../
+        dest: "{{ app_dir }}"
+        recursive: yes
+        delete: yes
+      delegate_to: localhost
 
-          app = FastAPI()
-
-          @app.get("/")
-          def root():
-              return {"message": "FastAPI deployed using Ansible 🚀"}
+    - name: Install Python dependencies
+      pip:
+        requirements: "{{ app_dir }}/requirements.txt"
+        executable: pip3
 
     - name: Create systemd service
       copy:
         dest: /etc/systemd/system/fastapi.service
-        mode: "0644"
         content: |
           [Unit]
           Description=FastAPI Application
@@ -71,5 +60,5 @@
     - name: Reload systemd
       command: systemctl daemon-reexec
 
-    - name: Enable and start FastAPI
+    - name: Enable and restart FastAPI
       command: systemctl enable fastapi && systemctl restart fastapi
